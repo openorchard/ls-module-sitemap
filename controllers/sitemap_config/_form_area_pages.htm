@@ -1,0 +1,23 @@
+<div class="listContainer">
+	<table class="simpleList">
+		<thead>
+			<tr>
+				<th><input type="checkbox" class="list_head_cb" value="1" onclick="$(this).findParent('table').getElements('tbody  input.list_cb').each(function(cb){cb.checked=this.checked}, this)"></th>
+				<th>Page Title</th>
+				<th>Page URL</th>
+			</tr>
+		</thead>
+		<tbody>
+			<? foreach($pages as $page): ?>
+				<tr class="<?= zebra('even') ?>">
+					<td><input type="checkbox" value="1" name="pages[<?= $page->id ?>]" id="pages_<?= $page->id ?>" <? if($page->sitemap_visible): ?>checked<? endif ?> class="list_cb"></td>
+					<td><label class="choice" for="pages_<?= $page->id ?>"><?= $page->title ?></label></td>
+					<td><label class="choice" for="pages_<?= $page->id ?>"><?= $page->url ?></label></td>
+				</tr>			
+			<? endforeach ?>
+		</tbody>
+	</table>
+</div>
+
+
+
