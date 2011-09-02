@@ -79,9 +79,14 @@
 				$root_url = Phpr::$request->getRootUrl();
 				$lssalestracking_installed = Core_ModuleManager::findById('lssalestracking');
 				//$lssalestracking_installed = Db_DbHelper::scalar('select count(*) from core_install_history where moduleId = ?', 'lssalestracking');
-			
-				$product_list = new Shop_Product(null, array('no_column_init' => true, 'no_validation' => true)); 
-	 			$product_list = $product_list->apply_filters()->where('enabled=1')->limit(self::max_generated)->order('shop_products.updated_at desc')->find_all();
+				
+				if($lssalestracking_installed && class_exists('LsSalesTracking_ProductManager')) {
+					$product_list = new Shop_Product(null, array('no_column_init' => true, 'no_validation' => true)); 
+	 				$product_list = $product_list->apply_filters()->where('enabled=1')->limit(self::max_generated)->order('shop_products.updated_at desc')->find_all();
+	 			} 
+	 			else {
+	 				$product_list = Db_DbHelper::objectArray('select url_name, updated_at from shop_products where enabled is true and (grouped is null or grouped = 0) order by updated_at limit :?', self::max_generated);
+	 			}
 	 			foreach($product_list as $product) {
 	 				if($lssalestracking_installed && class_exists('LsSalesTracking_ProductManager')) {
 	 					$product_url = site_url($params->products_path.LsSalesTracking_ProductManager::get_marketplace_product_url($product));
