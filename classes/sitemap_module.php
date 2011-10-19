@@ -85,15 +85,15 @@
 	 				$product_list = $product_list->apply_filters()->where('enabled=1')->limit(self::max_generated)->order('shop_products.updated_at desc')->find_all();
 	 			} 
 	 			else {
-	 				$product_list = Db_DbHelper::objectArray('select url_name, updated_at from shop_products where enabled is true and (grouped is null or grouped = 0) order by updated_at limit :?', self::max_generated);
+	 				$product_list = Db_DbHelper::objectArray('select url_name, updated_at from shop_products where enabled is true and (grouped is null or grouped = 0) order by updated_at limit '.self::max_generated);
 	 			}
 	 			foreach($product_list as $product) {
 	 				if($lssalestracking_installed && class_exists('LsSalesTracking_ProductManager')) {
 	 					$product_url = site_url($params->products_path.LsSalesTracking_ProductManager::get_marketplace_product_url($product));
 	 				}
 	 				else {
-	 					 $product_url = $root_url.$product->page_url($params->products_path);
-	 					 //$product_url = site_url($params->products_path.'/'.$product->url_name);
+	 					 //$product_url = $root_url.$product->page_url($params->products_path);
+	 					 $product_url = site_url($params->products_path.'/'.$product->url_name);
 	 					}		
 	 				if($url = $this->prepare_url_element($xml, $product_url,  date('c', strtotime($product->updated_at)), $params->products_changefreq, $params->products_priority))
 	 					$urlset->appendChild($url);
