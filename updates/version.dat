@@ -2,3 +2,4 @@
 #2|1.1.0 Added support for lssalestracking module
 #3|1.2.0 Added support for the wiki module
 #4|1.2.1 Optimized product pages generation
+#5|1.2.2 Minor update in link generation (add trailing slash)

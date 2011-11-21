@@ -62,7 +62,9 @@
 			$page_list = Cms_Page::create()->where('is_published=1')->where('sitemap_visible=1')->where('navigation_visible=1')->where('security_mode_id <> "customers"')->find_all(); 		
 			if(count($page_list)) {
 				foreach($page_list as $page) {
-					if($url = $this->prepare_url_element($xml, site_url($page->url),  date('c', strtotime($page->updated_at)), 'weekly', '0.7'))
+					$page_url = site_url($page->url);
+					if(substr($page_url, -1) != '/') $page_url .= '/';
+					if($url = $this->prepare_url_element($xml, $page_url,  date('c', strtotime($page->updated_at)), 'weekly', '0.7'))
 						$urlset->appendChild($url);
 				}
 			}
@@ -70,7 +72,9 @@
 			if($params->include_categories) {
 				$category_list = Shop_Category::create()->limit(self::max_generated)->order('shop_categories.updated_at desc')->find_all();
 				foreach($category_list as $category) {
-					if($url = $this->prepare_url_element($xml, site_url($params->categories_path.'/'.$category->url_name),  date('c', strtotime($category->updated_at)), $params->categories_changefreq, $params->categories_priority))
+					$category_url = site_url($params->categories_path.'/'.$category->url_name);
+					if(substr($category_url, -1) != '/') $category_url .= '/';
+					if($url = $this->prepare_url_element($xml, $category_url,  date('c', strtotime($category->updated_at)), $params->categories_changefreq, $params->categories_priority))
 						$urlset->appendChild($url);
 				}
 			}
@@ -98,7 +102,8 @@
 	 					 else 
 	 					 	$page = $params->products_path;
 	 					 $product_url = site_url($page.'/'.$product->url_name);
-	 					}		
+	 					}
+	 				if(substr($product_url, -1) != '/') $product_url .= '/';
 	 				if($url = $this->prepare_url_element($xml, $product_url,  date('c', strtotime($product->updated_at)), $params->products_changefreq, $params->products_priority))
 	 					$urlset->appendChild($url);
 	 			}
@@ -106,7 +111,9 @@
  			if($params->include_blogposts) {
 	 			$blog_post_list = Blog_Post::create()->limit(self::max_generated)->order('blog_posts.updated_at desc')->find_all();
 	 			foreach($blog_post_list as $blog_post) {
-	 				if($url = $this->prepare_url_element($xml, site_url($params->blogposts_path.'/'.$blog_post->url_title),  date('c', strtotime($blog_post->published_date)), $params->blogposts_changefreq, $params->blogposts_priority))
+	 				$blogpost_url = site_url($params->blogposts_path.'/'.$blog_post->url_title);
+	 				if(substr($blogpost_url, -1) != '/') $blogpost_url .= '/';
+	 				if($url = $this->prepare_url_element($xml, $blogpost_url,  date('c', strtotime($blog_post->published_date)), $params->blogposts_changefreq, $params->blogposts_priority))
 	 					$urlset->appendChild($url);
 	 			}
  			}
@@ -116,7 +123,9 @@
  			if($wiki_installed && $params->include_wiki && class_exists('Wiki_Page')) {
  				$wiki_page_list = Wiki_Page::create()->limit(self::max_generated)->where('is_published=1')->order('wiki_pages.updated_at desc')->find_all(); 			
  				foreach($wiki_page_list as $wiki_page) {
- 					if($url = $this->prepare_url_element($xml, site_url($params->wiki_path.'/'.$wiki_page->url_title), date('c', strtotime($wiki_page->updated_at)), $params->wiki_changefreq, $params->wiki_priority))
+ 					$wiki_url = site_url($params->wiki_path.'/'.$wiki_page->url_title);
+ 					if(substr($wiki_url, -1) != '/') $wiki_url .= '/';
+ 					if($url = $this->prepare_url_element($xml, $wiki_url, date('c', strtotime($wiki_page->updated_at)), $params->wiki_changefreq, $params->wiki_priority))
  						$urlset->appendChild($url);
  				}
  			} 			
