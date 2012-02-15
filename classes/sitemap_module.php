@@ -43,7 +43,7 @@
 		
 		public function register_access_points()	{
 				return array(
-					'sitemap.xml' =>'generate_sitemap'
+					'sitemap' =>'generate_sitemap'
 				);
 		}
 		
