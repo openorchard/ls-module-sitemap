@@ -64,7 +64,7 @@
 				foreach($page_list as $page) {
 					$page_url = site_url($page->url);
 					if(substr($page_url, -1) != '/') $page_url .= '/';
-					if($url = $this->prepare_url_element($xml, $page_url,  date('c', strtotime($page->updated_at)), 'weekly', '0.7'))
+					if($url = $this->prepare_url_element($xml, $page_url,  date('c', strtotime($page->updated_at?$page->updated_at:$page->created_at)), 'weekly', '0.7'))
 						$urlset->appendChild($url);
 				}
 			}
@@ -74,7 +74,7 @@
 				foreach($category_list as $category) {
 					$category_url = site_url($params->categories_path.'/'.$category->url_name);
 					if(substr($category_url, -1) != '/') $category_url .= '/';
-					if($url = $this->prepare_url_element($xml, $category_url,  date('c', strtotime($category->updated_at)), $params->categories_changefreq, $params->categories_priority))
+					if($url = $this->prepare_url_element($xml, $category_url,  date('c', strtotime($category->updated_at?$category->updated_at:$category->created_at)), $params->categories_changefreq, $params->categories_priority))
 						$urlset->appendChild($url);
 				}
 			}
@@ -89,7 +89,7 @@
 	 				$product_list = $product_list->apply_filters()->where('enabled=1')->limit(self::max_generated)->order('shop_products.updated_at desc')->find_all();
 	 			} 
 	 			else {
-	 				$product_list = Db_DbHelper::objectArray('select sp.url_name, sp.updated_at, p.url, p.is_published from shop_products sp left outer join pages p on (sp.page_id = p.id) where sp.enabled is true and (sp.grouped is null or sp.grouped = 0) order by updated_at limit '.self::max_generated);
+	 				$product_list = Db_DbHelper::objectArray('select sp.url_name, sp.updated_at, sp.created_at, p.url, p.is_published from shop_products sp left outer join pages p on (sp.page_id = p.id) where sp.enabled is true and (sp.grouped is null or sp.grouped = 0) order by updated_at limit '.self::max_generated);
 	 			}
 	 			foreach($product_list as $product) {
 	 				if($lssalestracking_installed && class_exists('LsSalesTracking_ProductManager')) {
@@ -104,7 +104,7 @@
 	 					 $product_url = site_url($page.'/'.$product->url_name);
 	 					}
 	 				if(substr($product_url, -1) != '/') $product_url .= '/';
-	 				if($url = $this->prepare_url_element($xml, $product_url,  date('c', strtotime($product->updated_at)), $params->products_changefreq, $params->products_priority))
+	 				if($url = $this->prepare_url_element($xml, $product_url,  date('c', strtotime($product->updated_at?$product->updated_at:$product->created_at)), $params->products_changefreq, $params->products_priority))
 	 					$urlset->appendChild($url);
 	 			}
  			}
@@ -125,7 +125,7 @@
  				foreach($wiki_page_list as $wiki_page) {
  					$wiki_url = site_url($params->wiki_path.'/'.$wiki_page->url_title);
  					if(substr($wiki_url, -1) != '/') $wiki_url .= '/';
- 					if($url = $this->prepare_url_element($xml, $wiki_url, date('c', strtotime($wiki_page->updated_at)), $params->wiki_changefreq, $params->wiki_priority))
+ 					if($url = $this->prepare_url_element($xml, $wiki_url, date('c', strtotime($wiki_page->updated_at?$wiki_page->updated_at:$wiki_page->created_at)), $params->wiki_changefreq, $params->wiki_priority))
  						$urlset->appendChild($url);
  				}
  			} 			
